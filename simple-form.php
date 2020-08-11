@@ -125,6 +125,16 @@ class Validator {
         $phone = str_replace(' ', '', str_replace('-', '', $entry[$field]));
         return !!preg_match('/^(\(\d{2}\))?\d{8,9}$/', $phone);
     }
+
+    /**
+     * O campo contém um valor único? Usa a classe Storage para verificar se já existe um registro do campo "field" com
+     * esse valor
+     * 
+     * @param array $entry Array com os dados do formulario
+     * @param string $field Nome do campo
+     * 
+     * @return bool
+     */
     public static function unique(array $entry, string $field): bool
     {
         if (!$entry[$field]) {
