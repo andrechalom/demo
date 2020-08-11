@@ -124,7 +124,71 @@ class Validator {
     }
     public static function unique(array $entry, string $field): bool
     {
-        return false; //TO DO
+        if (!$entry[$field]) {
+            return true;
+        }
+        $storage = (new Storage())->getContents();
+        // Extrai a coluna que queremos que seja única:
+        $column = array_column($storage, $field);
+        return !in_array($entry[$field], $column);
+    }
+}
+
+/** Solução simples para criptografar dados (mão única!) */
+class Crypt {
+    private static $salt = 'SERVERSALT123';
+
+    /**
+     * Criptografa um string usando um salt fixo
+     * 
+     * @param string $data Texto a ser criptografado
+     */
+    public static function encrypt(string $data): string
+    {
+        return sha1(self::$salt . $data);
+    }
+}
+
+/** Abstração simples para um sistema de arquivo */
+class Storage {
+    private static $filename = "./registros.txt";
+    private array $data = [];
+
+    /**
+     * Cria um novo objeto da classe Storage, contendo os dados lidos a partir do disco.
+     */
+    public function __construct() {
+        if (!file_exists(self::$filename)) {
+            return;
+        }
+        $fileContents = file_get_contents(self::$filename);
+        $this->data = json_decode($fileContents, true);
+    }
+
+    /**
+     * Retorna um array associativo contendo todos os dados já salvos
+     */
+    public function getContents(): array {
+        return $this->data;
+    }
+
+    /**
+     * Inclui um novo registro em memória, use "save" para persistir os dados em disco
+     * 
+     * @param array $entry Array associativo contendo os dados a serem salvos
+     */
+    public function addEntry(array $entry): void
+    {
+        $this->data[] = $entry;
+    }
+
+    /**
+     * Salva em disco o conteúdo desse storage.
+     */
+    public function save(): void
+    {
+        $file = fopen(self::$filename, "w");
+        fwrite($file, json_encode($this->data));
     }
 }
 
@@ -164,9 +228,15 @@ function validateInput(array $entry, array $ruleset): bool
     return $valid;
 }
 
-// Detecta se estamos recebendo um input ou não. Dentro de um framework, isso seria tratado melhor
-// usando routes, mas para criar uma única página isso é uma solução adequada... 
-if (array_key_exists("submit", $_POST)) {
+/**
+ * Aplica as validações e transformações de dados necessários e salva um registro. 
+ * Retorna "true" se o registro foi salvo, "false" se houve um erro.
+ * 
+ * @param array $entry Array contendo os dados a serem salvos
+ */
+function saveEntry(array $entry): bool
+{
+    // Validações
     $ruleset = [
         "fname" => ["exists"],
         "lname" => ["exists"],
@@ -175,32 +245,52 @@ if (array_key_exists("submit", $_POST)) {
         "login" => ["exists", "unique"],
         "password" => ["exists"],
     ];
-    $valid = validateInput($_POST, $ruleset);
-    var_dump($_POST);
+    $valid = validateInput($entry, $ruleset);
 
+    // Transforma o valor do password para ser salvo encriptado.
+    $entry["password"] = Crypt::encrypt($entry["password"]);
+
+    if ($valid) {
+        $storage = new Storage();
+        $storage->addEntry($entry);
+        $storage->save();
+        return true;
+    }
+    return false;
+}
+
+// Detecta se estamos recebendo um input ou não. Dentro de um framework, isso seria tratado melhor
+// usando routes, mas para criar uma única página isso é uma solução adequada... 
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    if (saveEntry($_POST)) {
+        $_POST = [];
+    }
 }
 ?>
 <!DOCTYPE html>
 <html>
     <head>
         <title>Exemplo de formulário</title>
-<style>
-    form {border-radius: 5px; background-color: #f2f2f2; padding: 20px; width: 25%}
-input[type=text], input[type=password] {width: 100%; padding: 12px 20px; margin: 8px 0; display: inline-block; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;}
-input[type=submit] {width: 100%; background-color: #4CAF50; color: white; padding: 14px 20px; margin: 8px 0; border: none; border-radius: 4px; cursor: pointer;}
-input[type=submit]:hover {background-color: #45a049;}
-input.trouble{border-color: lightcoral;}
-</style>
+        <style>
+            form {border-radius: 5px; background-color: #f2f2f2; padding: 20px; width: 25%}
+            input[type=text], input[type=password] {width: 100%; padding: 12px 20px; margin: 8px 0; display: inline-block; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;}
+            input[type=submit] {width: 100%; background-color: #4CAF50; color: white; padding: 14px 20px; margin: 8px 0; border: none; border-radius: 4px; cursor: pointer;}
+            input[type=submit]:hover {background-color: #45a049;}
+            input.trouble{border-color: lightcoral;}
+        </style>
     </head>
     <body>
         <form action="/simple-form.php" method="POST">
+        <?php if (!empty($_POST)) { ?>
+            <div>Houve um erro ao processar os dados! Verifique os campos em vermelho...</div><br>
+         <?php } ?>
             <?= FormHelper::textInput("fname", "Nome") ?>
             <?= FormHelper::textInput("lname", "Sobrenome") ?>
             <?= FormHelper::textInput("email", "E-mail") ?>
             <?= FormHelper::textInput("phone", "Telefone") ?>
             <?= FormHelper::textInput("login", "Login") ?>
             <?= FormHelper::textInput("password", "Senha", true) ?>
-            <input type="submit" name="submit" value="Cadastrar">
+            <input type="submit" value="Cadastrar">
         </form>
     </body>
 </html>
