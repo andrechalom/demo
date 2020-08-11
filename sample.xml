@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog>
+    <game>
+        <name>The Witcher 3</name>
+        <released>2015</released>
+        <genre>RPG</genre>
+    </game>
+    <game>
+        <name>Humankind</name>
+        <genre>Strategy</genre>
+    </game>
+    <game>
+        <released>2018</released>
+        <genre>Strategy</genre>
+        <name>Rimworld</name>
+    </game>
+</catalog>

@@ -1,4 +1,7 @@
 <?php
+/** NOTA! Estou ignorando as PSR nesse código por brevidade. Em um projeto real, cada classe deveria estar
+ * em um arquivo separado, com namespaces próprios!
+ */
 /** 
  * Classe com algumas funções básicas para auxiliar a escrever um form. 
  */
