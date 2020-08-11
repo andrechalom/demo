@@ -1,84 +1,134 @@
 <?php
-error_reporting(E_ALL);
 /** 
- * Retorna o valor do campo presente no $_POST. Use em forms para manter o valor do
- * campo que foi submetido. Dentro de um framework, isso poderia ser feito de forma mais elegante,
- * evitando o acesso direto ao superglobal $_POST...
- * 
- * @param string $field Nome do campo, corresponde ao atributo name no input html.
- * 
- * @return string 
+ * Classe com algumas funções básicas para auxiliar a escrever um form. 
  */
-function old(string $field): string
-{
-    return array_key_exists($field, $_POST) ? $_POST[$field] : "";
-}
+class FormHelper {
+    /**
+     * @static array Contém os nomes dos campos que tiveram algum erro ao validar o form, usado para indicar ao
+     * usuário qual foi o erro.
+     */
+    public static $troubles = [];
 
-/**
- * Indica se um campo foi submetido com erro. Dentro de um framework, isso poderia ser feito de forma
- * mais elegante, sem o uso de uma variável global...
- * 
- * @param string $field Nome do campo, corresponde ao atributo name no input html.
- * 
- * @return string "trouble" se houve erro relacionado a esse campo, "" caso contrário
- */
-function trouble(string $field): string
-{
-    global $troubles;
-    return (isset($troubles) && in_array($field, $troubles)) ? "trouble" : "";
-}
-
-/**
- * Função muito simples para construir um input do tipo texto ou password.
- * 
- * @param string $fieldname Nome do input. Será usado como id e name no html gerado.
- * @param string $label Texto para ser mostrado como label ao lado do input
- * (não use : pois isso será incluído automaticamente)
- * @param bool $secret Use para gerar campos de password
- * 
- * @return string 
- */
-function textInput(string $fieldname, string $label, bool $secret = false): string
-{
-    $elementType = $secret ? "password" : "text";
-    $input = "<label for='$fieldname'>$label:</label>";
-    $input .= "<input
-        type='$elementType'
-        id='$fieldname'
-        name='$fieldname'
-        class='" . trouble($fieldname) . "'";
-    if (!$secret) {
-        $input .= "value='" . old($fieldname) . "'";
+    /** 
+     * Retorna o valor do campo presente no $_POST. Use em forms para manter o valor do
+     * campo que foi submetido. Dentro de um framework, isso poderia ser feito de forma mais elegante,
+     * evitando o acesso direto ao superglobal $_POST...
+     * 
+     * @param string $field Nome do campo, corresponde ao atributo name no input html.
+     * 
+     * @return string 
+     */
+    public static function old(string $field): string
+    {
+        return array_key_exists($field, $_POST) ? $_POST[$field] : "";
     }
-    $input .= "><br>";
-    return $input;
+    /**
+     * Indica se um campo foi submetido com erro. 
+     * 
+     * @param string $field Nome do campo, corresponde ao atributo name no input html.
+     * 
+     * @return string "trouble" se houve erro relacionado a esse campo, "" caso contrário
+     */
+    public static function isTrouble(string $field): bool
+    {
+        return in_array($field, self::$troubles);
+    }
+
+    /**
+     * Indica que um campo foi submetido com erro.
+     * 
+     * @param string $field Nome do campo, corresponde ao atributo name no input html.
+     */
+    public static function setTrouble(string $field): void
+    {
+        self::$troubles[] = $field;
+    }
+
+    /**
+     * Função muito simples para construir um input do tipo texto ou password. Ela mostra o dado que foi submetido
+     * originalmente e indica em vermelho os campos que apresentaram problema. Idealmente, esse alerta 
+     * poderia incluir uma mensagem para indicar qual foi o problema, mas não vou implementar isso aqui 
+     * para não ficar extenso demais!
+     * 
+     * @param string $fieldname Nome do input. Será usado como id e name no html gerado.
+     * @param string $label Texto para ser mostrado como label ao lado do input
+     * (não use : pois isso será incluído automaticamente)
+     * @param bool $secret Use para gerar campos de password
+     * 
+     * @return string 
+     */
+    public static function textInput(string $fieldname, string $label, bool $secret = false): string
+    {
+        $elementType = $secret ? "password" : "text";
+        $input = "<label for='$fieldname'>$label:</label>";
+        $input .= "<input
+            type='$elementType'
+            id='$fieldname'
+            name='$fieldname'
+            class='" . (self::isTrouble($fieldname) ? "trouble" : "") . "'";
+        if (!$secret) {
+            $input .= "value='" . self::old($fieldname) . "'";
+        }
+        $input .= "><br>";
+        return $input;
+    }
 }
 
-/**
- * Validator: o campo tem algum valor não-vazio?
- * 
- * @param array $entry Array com os dados do formulario
- * @param string $field Nome do campo
- * 
- * @return bool
- */
-function exists(array $entry, string $field): bool
-{
-    return isset($entry[$field]) && !empty($entry[$field]);
+/** Classe contendo funções de validação de dados. */
+class Validator {
+    /**
+     * O campo tem algum valor não-vazio?
+     * 
+     * @param array $entry Array com os dados do formulario
+     * @param string $field Nome do campo
+     * 
+     * @return bool
+     */
+    public static function exists(array $entry, string $field): bool
+    {
+        return isset($entry[$field]) && !empty($entry[$field]);
+    }
+
+    /**
+     * O campo contém um e-mail válido?
+     * 
+     * @param array $entry Array com os dados do formulario
+     * @param string $field Nome do campo
+     * 
+     * @return bool
+     */
+    public static function email(array $entry, string $field): bool
+    {
+        if (!$entry[$field]) {
+            return true;
+        }
+        return filter_var($entry[$field], FILTER_VALIDATE_EMAIL);
+    }
+    
+    /**
+     * O campo contém um telefone válido? Considera DDD e telefones de 8 ou 9 posições. Esse regex
+     * é bastante permissivo com o uso de hífen ou espaço para formatação do número.
+     * 
+     * @param array $entry Array com os dados do formulario
+     * @param string $field Nome do campo
+     * 
+     * @return bool
+     */
+    public static function phone(array $entry, string $field): bool
+    {
+        if (!$entry[$field]) {
+            return true;
+        }
+        $phone = str_replace(' ', '', str_replace('-', '', $entry[$field]));
+        return !!preg_match('/^(\(\d{2}\))?\d{8,9}$/', $phone);
+    }
+    public static function unique(array $entry, string $field): bool
+    {
+        return false; //TO DO
+    }
 }
 
-function email(array $entry, string $field): bool
-{
-    return true;
-}
-function phone(array $entry, string $field): bool
-{
-    return true;
-}
-function unique(array $entry, string $field): bool
-{
-    return false;
-}
+class ValidatorException extends Exception {}
 
 /**
  * Aplica um conjunto de validadores de dados a uma entrada, retornando true se a entrada
@@ -100,10 +150,14 @@ function validateInput(array $entry, array $ruleset): bool
     $valid = true;
     foreach($ruleset as $field => $rules) {
         foreach ($rules as $rule) {
-            $thisRuleResult = call_user_func($rule, $entry, $field);
+            if (!is_callable(["Validator", $rule])) {
+                throw new ValidatorException("Regra de validação $rule não localizada!");
+            }
+            $thisRuleResult = call_user_func(["Validator", $rule], $entry, $field);
             if (!$thisRuleResult) {
                 $valid = false;
-                $troubles[] = $field;
+                // Marca o campo que estamos validando como tendo um erro, para permitir feedback ao usuário
+                FormHelper::setTrouble($field);
             }
         }
     }
@@ -140,12 +194,12 @@ input.trouble{border-color: lightcoral;}
     </head>
     <body>
         <form action="/simple-form.php" method="POST">
-            <?= textInput("fname", "Nome") ?>
-            <?= textInput("lname", "Sobrenome") ?>
-            <?= textInput("email", "E-mail") ?>
-            <?= textInput("phone", "Telefone") ?>
-            <?= textInput("login", "Login") ?>
-            <?= textInput("password", "Senha", true) ?>
+            <?= FormHelper::textInput("fname", "Nome") ?>
+            <?= FormHelper::textInput("lname", "Sobrenome") ?>
+            <?= FormHelper::textInput("email", "E-mail") ?>
+            <?= FormHelper::textInput("phone", "Telefone") ?>
+            <?= FormHelper::textInput("login", "Login") ?>
+            <?= FormHelper::textInput("password", "Senha", true) ?>
             <input type="submit" name="submit" value="Cadastrar">
         </form>
     </body>
