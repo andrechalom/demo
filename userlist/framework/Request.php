@@ -4,8 +4,9 @@ namespace Framework;
 
 class Request
 {
+    private array $data = [];
     public function __construct(array $data)
     {
-        var_dump($data);
+        $this->data = $data;
     }
 }
