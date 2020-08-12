@@ -1,0 +1,99 @@
+##### Documentação da API - lista de usuários
+# A lista de usuários provê uma interface simples para gerenciar os usuários
+# do sistema. Ela é acessível através de uma interface RESTful. No momento,
+# não há nenhum tipo de autenticação ou autorização necessária para acessar
+# a API. 
+# 
+# Há dois tipos de parâmetros aceitos pela API: identificadores e demais
+# parâmetros. Identificadores (como em PUT /users/{email}) devem ser
+# enviados na URI, enquanto demais parâmetros para os métodos que os aceitam 
+# devem ser enviados no corpo da requisição, em formato JSON.
+#
+# Para usar os exemplos abaixo diretamente do Visual Studio, use a extensão
+# https://marketplace.visualstudio.com/items?itemName=humao.rest-client
+#
+#### Usuários
+# Usuários são o recurso básico desse sistema. Eles representam pessoas reais,
+# e tem obrigatóriamente um nome (composto de prenome e sobrenome), um e-mail
+# e um número de telefone.
+#
+# Endpoints disponíveis:
+# GET /users - Lista todos os usuários
+# POST /users - Adiciona um novo usuário
+# PUT /users/{email} - Edita os dados do usuário com o e-mail informado
+# DELETE /users/{email} - Remove o usuário com o e-mail informado
+#
+# Métodos incorretos (por exemplo, POST /users/{email}) são respondidos com
+# uma mensagem de erro, assim como métodos que não receberam todos os 
+# parâmetros necessários.
+#
+#### Endpoints:
+### Listar todos os usuários
+# Formato: GET /users
+# Parâmetros aceitos: nenhum
+# Exemplo:
+GET http://127.0.0.1:8000/users HTTP/1.1
+content-type: application/json
+
+{
+    // Nenhum parâmetro é aceito
+}
+
+### Adicionar usuário novo. 
+# Formato: POST /users
+# Parâmetros aceitos:
+# nome: Prenome do usuário.
+# sobrenome: Sobrenome do usuário.
+# e-mail: Endereço de e-mail para comunicação. Deve ser um e-mail válido,
+# e vai ser usado para identificar esse usuário em outras chamadas
+# telefone: número de telefone do usuário. Deve ser um número de telefone
+# válido, com ou sem um DDD identificado por parênteses. O uso de espaços
+# ou hífens para formatar o telefone é livre
+# Todos os parâmetros são obrigatórios.
+# Exemplo:
+POST http://127.0.0.1:8000/users HTTP/1.1
+content-type: application/json
+
+{
+    "nome": "João",
+    "sobrenome": "da Silva",
+    "e-mail": "jdasilva@example.com",
+    "telefone": "(11) 555-1234"
+}
+
+### Editar os dados de um usuário
+# Formato: PUT /users/{email}
+# Identificador:
+# email: Identificador do usuário a ser editado. 
+# Demais parâmetros aceitos:
+# nome: Prenome do usuário.
+# sobrenome: Sobrenome do usuário.
+# e-mail: Endereço de e-mail para comunicação. Deve ser um e-mail válido,
+# e vai ser usado para identificar esse usuário em outras chamadas
+# telefone: número de telefone do usuário. Deve ser um número de telefone
+# válido, com ou sem um DDD identificado por parênteses. O uso de espaços
+# ou hífens para formatar o telefone é livre
+# Todos os parâmetros são obrigatórios.
+# Exemplo:
+PUT http://127.0.0.1:8000/users/jdasilva@example.com HTTP/1.1
+content-type: application/json
+
+{
+    "nome": "José",
+    "sobrenome": "da Silva Souza",
+    "e-mail": "jdasilva@example.com",
+    "telefone": "(11) 555-1234"
+}
+
+### Remover um usuário
+# Formato: DELETE /users/{email}
+# Identificador:
+# email: Identificador do usuário a ser editado. 
+# Demais parâmetros aceitos: nenhum
+# Exemplo:
+DELETE http://127.0.0.1:8000/users/jdasilva@example.com HTTP/1.1
+content-type: application/json
+
+{
+    // Nenhum parâmetro é aceito
+}
