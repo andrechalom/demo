@@ -7,13 +7,17 @@ use Framework\Router;
 
 class App
 {
+    static private $controllerNamespace = "App\\Controller\\";
     public static function run(string $method, string $uri, array $request): void
     {
         $request = new Request($request);
         $route = Router::match($method, $uri);
-        $identifier = $route->extractIdentifier($uri);
+        $controllerClass = self::$controllerNamespace . $route->controller();
+        $controller = new $controllerClass();
         $action = $route->action();
-        var_dump($identifier);
+        $identifier = $route->extractIdentifier($uri);
+        $response = $controller->{$action}($request, $identifier);
+        var_dump($controller);
         var_dump($action);
         echo "OI";
     }

@@ -9,9 +9,6 @@
 # enviados na URI, enquanto demais parâmetros para os métodos que os aceitam 
 # devem ser enviados no corpo da requisição, em formato JSON.
 #
-# Para usar os exemplos abaixo diretamente do Visual Studio, use a extensão
-# https://marketplace.visualstudio.com/items?itemName=humao.rest-client
-#
 #### Usuários
 # Usuários são o recurso básico desse sistema. Eles representam pessoas reais,
 # e tem obrigatóriamente um nome (composto de prenome e sobrenome), um e-mail
@@ -42,23 +39,23 @@ content-type: application/json
 ### Adicionar usuário novo. 
 # Formato: POST /users
 # Parâmetros aceitos:
-# nome: Prenome do usuário.
-# sobrenome: Sobrenome do usuário.
-# e-mail: Endereço de e-mail para comunicação. Deve ser um e-mail válido,
+# name: Prenome do usuário.
+# lname: Sobrenome do usuário.
+# email: Endereço de e-mail para comunicação. Deve ser um e-mail válido,
 # e vai ser usado para identificar esse usuário em outras chamadas
-# telefone: número de telefone do usuário. Deve ser um número de telefone
+# phone: número de telefone do usuário. Deve ser um número de telefone
 # válido, com ou sem um DDD identificado por parênteses. O uso de espaços
 # ou hífens para formatar o telefone é livre
 # Todos os parâmetros são obrigatórios.
 # Exemplo:
 POST http://127.0.0.1:8000/users HTTP/1.1
-content-type: application/json
+content-type: "application/json"
 
 {
-    "nome": "João",
-    "sobrenome": "da Silva",
-    "e-mail": "jdasilva@example.com",
-    "telefone": "(11) 555-1234"
+    "name": "João",
+    "lname": "da Silva",
+    "email": "jdasilva@example.com",
+    "phone": "(11) 555-1234"
 }
 
 ### Editar os dados de um usuário
@@ -66,11 +63,11 @@ content-type: application/json
 # Identificador:
 # email: Identificador do usuário a ser editado. 
 # Demais parâmetros aceitos:
-# nome: Prenome do usuário.
-# sobrenome: Sobrenome do usuário.
-# e-mail: Endereço de e-mail para comunicação. Deve ser um e-mail válido,
+# name: Prenome do usuário.
+# lname: Sobrenome do usuário.
+# email: Endereço de e-mail para comunicação. Deve ser um e-mail válido,
 # e vai ser usado para identificar esse usuário em outras chamadas
-# telefone: número de telefone do usuário. Deve ser um número de telefone
+# phone: número de telefone do usuário. Deve ser um número de telefone
 # válido, com ou sem um DDD identificado por parênteses. O uso de espaços
 # ou hífens para formatar o telefone é livre
 # Todos os parâmetros são obrigatórios.

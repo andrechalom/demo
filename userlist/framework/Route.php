@@ -5,11 +5,13 @@ namespace Framework;
 class Route {
     private string $method;
     private string $uri;
+    private string $controller;
     private string $action;
 
-    public function __construct(string $method, string $uri, string $action)
+    public function __construct(string $method, string $uri, string $controller, string $action)
     {
         $this->method = strtoupper($method);
+        $this->controller = $controller;
         $this->action = $action;
         // Normaliza a URI para iniciar com /
         $uri = substr($uri, 0, 1) !== '/' ? '/' . $uri : $uri;
@@ -34,6 +36,10 @@ class Route {
             }
         }
         return null;
+    }
+
+    public function controller(): string {
+        return $this->controller;
     }
 
     public function action(): string {
