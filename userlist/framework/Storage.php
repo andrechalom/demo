@@ -1,6 +1,9 @@
 <?php
 
 namespace Framework;
+
+use Framework\Exception\NotFoundException;
+
 /** Abstração simples para um sistema de arquivo */
 class Storage {
     private static $filename = "./users.txt";
@@ -33,6 +36,17 @@ class Storage {
     {
         $this->data[] = $entry;
         return $this;
+    }
+
+    public function remove(string $field, string $content): self
+    {
+        foreach($this->data as $key => $item) {
+            if ($item[$field] === $content) {
+                unset($this->data[$key]);
+                return $this;
+            }
+        }
+        throw new NotFoundException("Resource with $field equal to $content was not found!");
     }
 
     /**

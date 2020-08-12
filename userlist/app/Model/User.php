@@ -17,4 +17,11 @@ class User
             ->addEntry($entry)
             ->save();
     }
+
+    public static function delete(string $email): void
+    {
+        (new Storage)
+            ->remove('email', $email)
+            ->save();
+    }
 }

@@ -2,6 +2,4 @@
 
 namespace Framework\Exception;
 
-use Exception;
-
-class RouteException extends Exception {}
+class RouteException extends ApplicationException {}

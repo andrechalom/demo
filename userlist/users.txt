@@ -1,0 +1,1 @@
+[{"name":["exists"],"lname":["exists"],"email":["exists","email","unique"],"phone":["phone"]},{"name":"Jo\u00e3o","lname":"da Silva","email":"jdasilva@example.com","phone":"(11) 5555-1234"}]
