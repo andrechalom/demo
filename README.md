@@ -7,10 +7,10 @@ necessário.
 
 Código desenvolvido e testado em PHP 7.4.3.
 
-Parte 1 - [location.php]
-Parte 2 - [mordido.php]
-Parte 3 - [extension.php]
-Parte 4 - [simple-form.php]
-Parte 5 - [xmlparser.php]
-Parte 6 - [select.php]
-Parte 7 - [userlist/]
+- Parte 1 - location.php
+- Parte 2 - mordido.php
+- Parte 3 - extension.php
+- Parte 4 - simple-form.php
+- Parte 5 - xmlparser.php
+- Parte 6 - select.php
+- Parte 7 - userlist/
