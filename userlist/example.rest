@@ -35,6 +35,22 @@ content-type: application/json
 {
     // Nenhum parâmetro é aceito
 }
+### Resposta: JSON contendo uma lista com os usuários cadastrados
+# Exemplo de resposta esperada:
+#{
+#  "1": {
+#    "name": "João",
+#    "lname": "da Silva",
+#    "email": "jdasilva@example.com",
+#    "phone": "(11) 5555-1234"
+#  },
+#  "2": {
+#    "name": "José",
+#    "lname": "dos Santos",
+#    "email": "jdossantos@example.com",
+#    "phone": "(11) 5555-5678"
+#  }
+#}
 
 ### Adicionar usuário novo. 
 # Formato: POST /users

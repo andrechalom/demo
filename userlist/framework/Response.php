@@ -15,8 +15,8 @@ class Response
 
     public function render(): void
     {
-        echo "BLOB";
-        echo $this->status;
-        echo json_encode($this->data);
+        http_response_code($this->status);
+        header('Content-Type: application/json; charset=UTF-8');
+        echo json_encode($this->data, JSON_UNESCAPED_UNICODE);
     }
 }

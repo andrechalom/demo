@@ -9,7 +9,7 @@ class Request
     private array $data = [];
     public function __construct()
     {
-        $json_params = json_decode(file_get_contents("php://input"), true);
+        $json_params = json_decode(file_get_contents("php://input"), true, 512, JSON_UNESCAPED_UNICODE);
         if (empty($json_params)) {
             return;
         }

@@ -18,7 +18,7 @@ class Storage {
             return;
         }
         $fileContents = file_get_contents($this->filename);
-        $this->data = json_decode($fileContents, true);
+        $this->data = json_decode($fileContents, true, 512, JSON_UNESCAPED_UNICODE);
     }
 
     /**
@@ -56,6 +56,6 @@ class Storage {
     public function save(): void
     {
         $file = fopen($this->filename, "w");
-        fwrite($file, json_encode($this->data));
+        fwrite($file, json_encode($this->data, JSON_UNESCAPED_UNICODE));
     }
 }
