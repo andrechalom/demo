@@ -7,6 +7,10 @@ use Framework\Exception\RequestException;
 class Request
 {
     private array $data = [];
+    /**
+     * Cria um objeto "Request" com os dados recebidos do cliente. Os dados devem estar em formato
+     * JSON, caso contrário uma exception será lançada.
+     */
     public function __construct()
     {
         $json_params = json_decode(file_get_contents("php://input"), true, 512, JSON_UNESCAPED_UNICODE);
@@ -24,7 +28,8 @@ class Request
      * obedecida, lança um RequestException.
      * 
      * @param array $ruleset Array cujas chaves são o nome dos campos a serem validados e os 
-     * valores são arrays contendo o nome dos validadores que devem ser aplicados
+     * valores são arrays contendo o nome dos validadores que devem ser aplicados.
+     * @param string $classname Nome do model que está sendo validado. 
      */
     function validate(array $ruleset, string $classname): void
     {
@@ -41,6 +46,7 @@ class Request
         }
     }
 
+    /** Retorna os dados recebidos pelo request */
     function data(): array
     {
         return $this->data;

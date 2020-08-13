@@ -10,7 +10,15 @@ use Framework\Exception\ApplicationException;
 class App
 {
     static private $controllerNamespace = "App\\Controller\\";
-    public static function run(string $method, string $uri, array $request): void
+    
+    /**
+     * Executa o ciclo completo da aplicação, lendo o request, direcionando o fluxo
+     * para um Controller e renderizando a resposta para o cliente.
+     * 
+     * @param string $method Método HTTP recebido (GET, POST, etc)
+     * @param string $uri URI recebida pelo servidor.
+     */
+    public static function run(string $method, string $uri): void
     {
         try {
             $request = new Request();

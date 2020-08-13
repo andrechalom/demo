@@ -2,6 +2,7 @@
 
 use Framework\Router;
 
+// Registra as rotas existentes na aplicação
 Router::register('GET', 'users', 'UsersController', 'index');
 Router::register('POST', 'users', 'UsersController', 'create');
 Router::register('PUT', 'users/(.*)', 'UsersController', 'update');

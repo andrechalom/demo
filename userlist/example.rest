@@ -22,7 +22,9 @@
 #
 # Métodos incorretos (por exemplo, POST /users/{email}) são respondidos com
 # uma mensagem de erro, assim como métodos que não receberam todos os 
-# parâmetros necessários.
+# parâmetros necessários. Erros com código 400 indicam algum problema com a
+# requisição, como falta de um campo obrigatório, enquanto erros com código 500
+# indicam algum erro de servidor.
 #
 #### Endpoints:
 ### Listar todos os usuários

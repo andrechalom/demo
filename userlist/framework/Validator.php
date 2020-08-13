@@ -52,11 +52,12 @@ class Validator {
     }
 
     /**
-     * O campo contém um valor único? Usa a classe Storage para verificar se já existe um registro do campo "field" com
+     * O campo contém um valor único? Usa a classe indicada para verificar se já existe um registro do campo "field" com
      * esse valor
      * 
      * @param array $entry Array com os dados do formulario
      * @param string $field Nome do campo
+     * @param string $classname A classe de model que será usada para resgatar os dados existentes.
      * 
      * @return bool
      */

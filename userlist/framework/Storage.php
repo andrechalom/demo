@@ -11,6 +11,9 @@ class Storage {
 
     /**
      * Cria um novo objeto da classe Storage, contendo os dados lidos a partir do disco.
+     * 
+     * @param string $modelname O nome do model, models com nomes diferentes serão armazenados
+     * em arquivos diferentes.
      */
     public function __construct(string $modelname) {
         $this->filename = $modelname . ".txt";
@@ -39,6 +42,12 @@ class Storage {
         return $this;
     }
 
+    /**
+     * Remove a primeira entrada cujo "field" seja igual ao "content".
+     * 
+     * @param string $field O campo a ser selecionado
+     * @param string $content O valor que está sendo buscado
+     */
     public function remove(string $field, string $content): self
     {
         foreach($this->data as $key => $item) {
