@@ -5,7 +5,7 @@ namespace Framework;
 use Framework\Exception\NotFoundException;
 
 /** Abstração simples para um sistema de arquivo */
-class Storage {
+class FileStorage implements \Framework\Interfaces\Storage {
     private string $filename;
     private array $data = [];
 

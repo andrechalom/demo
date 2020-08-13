@@ -66,7 +66,6 @@ class Validator {
         if (!$entry[$field]) {
             return true;
         }
-        //$storage = (new Storage())->getContents();
         $storage = call_user_func([$classname, "all"]);
         // Extrai a coluna que queremos que seja única:
         $column = array_column($storage, $field);
