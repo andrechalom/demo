@@ -26,14 +26,14 @@ class Request
      * @param array $ruleset Array cujas chaves são o nome dos campos a serem validados e os 
      * valores são arrays contendo o nome dos validadores que devem ser aplicados
      */
-    function validate(array $ruleset): void
+    function validate(array $ruleset, string $classname): void
     {
         foreach($ruleset as $field => $rules) {
             foreach ($rules as $rule) {
                 if (!is_callable(["Framework\\Validator", $rule])) {
                     throw new RequestException("Validation rule $rule not found!");
                 }
-                $thisRuleResult = call_user_func(["Framework\\Validator", $rule], $this->data, $field);
+                $thisRuleResult = call_user_func(["Framework\\Validator", $rule], $this->data, $field, $classname);
                 if (!$thisRuleResult) {
                     throw new RequestException("Validation rule $rule failed for field $field!");
                 }

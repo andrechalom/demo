@@ -55,7 +55,7 @@ content-type: application/json
     "name": "João",
     "lname": "da Silva",
     "email": "jdasilva@example.com",
-    "phone": "(11) 555-1234"
+    "phone": "(11) 5555-1234"
 }
 
 ### Editar os dados de um usuário
@@ -76,10 +76,10 @@ PUT http://127.0.0.1:8000/users/jdasilva@example.com HTTP/1.1
 content-type: application/json
 
 {
-    "nome": "José",
-    "sobrenome": "da Silva Souza",
-    "e-mail": "jdasilva@example.com",
-    "telefone": "(11) 555-1234"
+    "name": "José",
+    "lname": "da Silva Souza",
+    "email": "jdasilva@example.com",
+    "phone": "(11) 5555-1234"
 }
 
 ### Remover um usuário

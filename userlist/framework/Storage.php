@@ -6,17 +6,18 @@ use Framework\Exception\NotFoundException;
 
 /** Abstração simples para um sistema de arquivo */
 class Storage {
-    private static $filename = "./users.txt";
+    private string $filename;
     private array $data = [];
 
     /**
      * Cria um novo objeto da classe Storage, contendo os dados lidos a partir do disco.
      */
-    public function __construct() {
-        if (!file_exists(self::$filename)) {
+    public function __construct(string $modelname) {
+        $this->filename = $modelname . ".txt";
+        if (!file_exists($this->filename)) {
             return;
         }
-        $fileContents = file_get_contents(self::$filename);
+        $fileContents = file_get_contents($this->filename);
         $this->data = json_decode($fileContents, true);
     }
 
@@ -54,7 +55,7 @@ class Storage {
      */
     public function save(): void
     {
-        $file = fopen(self::$filename, "w");
+        $file = fopen($this->filename, "w");
         fwrite($file, json_encode($this->data));
     }
 }

@@ -60,12 +60,13 @@ class Validator {
      * 
      * @return bool
      */
-    public static function unique(array $entry, string $field): bool
+    public static function unique(array $entry, string $field, string $classname): bool
     {
         if (!$entry[$field]) {
             return true;
         }
-        $storage = (new Storage())->getContents();
+        //$storage = (new Storage())->getContents();
+        $storage = call_user_func([$classname, "all"]);
         // Extrai a coluna que queremos que seja única:
         $column = array_column($storage, $field);
         return !in_array($entry[$field], $column);

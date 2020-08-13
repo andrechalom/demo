@@ -5,23 +5,36 @@ use Framework\Storage;
 
 class User
 {
+    private static Storage $storage;
+
+    private static function initStorage(): void
+    {
+        if (!isset(self::$storage)) {
+            self::$storage = new Storage('users');
+        }
+    }
+
     public static function all(): array
     {
-        $storage = (new Storage())->getContents();
-        return $storage;
+        self::initStorage();
+        return self::$storage->getContents();
     }
 
     public static function create(array $entry): void
     {
-        (new Storage())
-            ->addEntry($entry)
-            ->save();
+        self::initStorage();
+        self::$storage->addEntry($entry);
     }
 
     public static function delete(string $email): void
     {
-        (new Storage)
-            ->remove('email', $email)
-            ->save();
+        self::initStorage();
+        self::$storage->remove('email', $email);
+    }
+
+    public static function commit(): void
+    {
+        self::initStorage();
+        self::$storage->save();
     }
 }

@@ -22,8 +22,9 @@ class UsersController
             "email" => ["exists", "email", "unique"],
             "phone" => ["phone"]
         ];
-        $request->validate($ruleset);
+        $request->validate($ruleset, User::class);
         User::create($request->data());
+        User::commit();
         return new Response(201, ["Success"]);
     }
 
@@ -36,14 +37,16 @@ class UsersController
             "email" => ["exists", "email", "unique"],
             "phone" => ["phone"]
         ];
-        $request->validate($ruleset);
+        $request->validate($ruleset, User::class);
         User::create($request->data());
+        User::commit();
         return new Response(200, ["Success"]);
     }
 
     public function delete(Request $request, string $email)
     {
         User::delete($email);
+        User::commit();
         return new Response(200, ["Success"]);
     }
 }
